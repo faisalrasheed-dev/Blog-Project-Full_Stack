@@ -1,0 +1,7 @@
+.maindiv .nav{display:flex;
+justify-content:flex-end;
+gap: 20px;
+list-style: none;
+justify-items: center;
+align-items: center;
+}
