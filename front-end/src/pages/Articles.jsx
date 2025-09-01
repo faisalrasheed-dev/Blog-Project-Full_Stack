@@ -1,5 +1,5 @@
 import ArticlesSeparate from "../components/ArticlesSeparate";
-import './articles.css'
+import './Articles.css'
 
 const Articles = () => {
   return (
