@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Articles from './pages/Articles';
-import About from './pages/about';
+import About from './pages/About';
 import HomePage from './pages/HomePage';
 import Layout from './Layout';
 import ArticleIndividual, { loader as aLoader } from "./pages/ArticleIndividual";

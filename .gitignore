@@ -1,0 +1,5 @@
+back-end/node_modules/
+back-end/serviceAccountKey.json
+back-end/.env
+data/db/
+
