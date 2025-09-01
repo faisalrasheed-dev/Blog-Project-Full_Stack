@@ -5,7 +5,7 @@ import articles from '../article-content';
 import { AddComment } from '../components/AddComment'; 
 import { CommentsList } from '../components/CommentsList'; 
 import {useUser} from '../UserContext.jsx'
-
+const API_URL = import.meta.env.VITE_API_URL || process.env.VITE_API_URL;
 const ArticleIndividual = () => {
   const { comments: initialComments, upvotes: initialUpvotes } = useLoaderData();
   const [upvotes, setUpvotes] = useState(initialUpvotes);
@@ -26,7 +26,7 @@ async function upvoteUpdate(){
       return
     }
     const headers={authtoken:token}
-    const response = await axios.post('/api/articles/' + name + '/upvotes',null,{headers});
+    const response = await axios.post(`${API_URL}/api/articles/${name}/upvotes`,null,{headers});
     const articleUpvote = response.data; 
     console.log("Upvote API Response:", articleUpvote); 
     setUpvotes(articleUpvote.upvotes);
@@ -40,7 +40,7 @@ async function onAddComment({commentText}){
     return
   }
   const headers={authtoken:token}
-    const response = await axios.post('/api/articles/' + name + '/comments', {text: commentText},{headers});
+    const response = await axios.post(`${API_URL}/api/articles/${name}/comments`, {text: commentText},{headers});
     const articleComments = response.data; 
     console.log("Comment API Response:", articleComments); 
     setComments(articleComments.comments);
@@ -60,7 +60,7 @@ async function onAddComment({commentText}){
 };
 
 export async function loader({ params }) {
-  const response = await axios.get('/api/articles/' + params.name);
+  const response = await axios.get(`${API_URL}/api/articles/${params.name}`);
   const { comments, upvotes } = response.data;
   return { comments, upvotes };
 }
