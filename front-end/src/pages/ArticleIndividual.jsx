@@ -53,6 +53,7 @@ async function onAddComment({commentText}){
       <h3>{article.name}</h3>
       {article.contents.map((p, i) => (<p key={i}>{p}</p>))}
       {user&&<AddComment onAddComment={onAddComment} />}
+      <h2>Comments</h2>
       <CommentsList comments={comments} />
     </div>
   );

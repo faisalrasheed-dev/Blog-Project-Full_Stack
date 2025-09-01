@@ -6,12 +6,12 @@ import fs from 'fs';
 import dotenv from 'dotenv'
 dotenv.config()
 
-const serviceAccountKey = JSON.parse(
-  fs.readFileSync('./serviceAccountKey.json')
-);
+const serviceAccountBase64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
+const decodedServiceAccount = Buffer.from(serviceAccountBase64, 'base64').toString('utf-8');
+const serviceAccount = JSON.parse(decodedServiceAccount);
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccountKey),
+  credential: admin.credential.cert(serviceAccount)
 });
 
 const app = express();
@@ -28,20 +28,13 @@ const connectionDB = async () => {
   await client.connect();
   db = client.db('full-stack-react-app');
 };
-
-
-
-// ✅ Get article by name
 app.get('/api/articles/:name', async (req, res) => {
   const { name } = req.params;
   const article = await db.collection('articles').findOne({ articleName: name });
   res.json(article);
 });
-
-
-// ✅ Middleware for authentication (Option 1 - lowercase authtoken)
 app.use(async (req, res, next) => {
-  const token = req.headers.authtoken;  // 👈 axios sends lowercase headers
+  const token = req.headers.authtoken; 
   if (token) {
     try {
       const user = await admin.auth().verifyIdToken(token);
@@ -49,14 +42,12 @@ app.use(async (req, res, next) => {
       return next();
     } catch (e) {
       console.error("Invalid token:", e);
-      return res.sendStatus(401); // invalid token
+      return res.sendStatus(401); 
     }
   } else {
-    return res.sendStatus(400); // no token
+    return res.sendStatus(400); 
   }
 });
-
-// ✅ Upvote article (only once per user)
 app.post('/api/articles/:name/upvotes', async (req, res) => {
   const { name } = req.params;
   const { uid } = req.user;
@@ -78,7 +69,7 @@ app.post('/api/articles/:name/upvotes', async (req, res) => {
       .findOne({ articleName: name });
     res.json(updatedArticle);
   } else {
-    res.sendStatus(401); // already upvoted
+    res.sendStatus(401); 
   }
 });
 
