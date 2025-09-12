@@ -7,7 +7,7 @@ export default ({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: env.VITE_API_URL, 
+          target: env.VITE_API_URL_LOCAL, 
           changeOrigin: true,
         },
       },

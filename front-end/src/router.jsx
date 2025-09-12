@@ -1,12 +1,18 @@
 import { createBrowserRouter } from "react-router-dom";
-import Articles from './pages/Articles';
-import About from './pages/About';
-import HomePage from './pages/HomePage';
+import { loader as bLoader } from './components/ArticlesSeparate';
 import Layout from './Layout';
+import About from './pages/About';
+import { AddArticle } from "./pages/AddArticle";
 import ArticleIndividual, { loader as aLoader } from "./pages/ArticleIndividual";
-import NotFound from "./pages/NotFound";
-import  CreateAccountPage  from "./pages/CreateAccountPage";
+import Articles from './pages/Articles';
+import CreateAccountPage from "./pages/CreateAccountPage";
+import EditArticle, { loader as dLoader } from "./pages/EditArticle";
+import HomePage from './pages/HomePage';
 import LoginPage from "./pages/LoginPage";
+import NotFound from "./pages/NotFound";
+import Profile, { loader as cLoader } from './pages/Profile';
+import { loader as eLoader } from "./pages/HomePage";
+
 
 
 const router = createBrowserRouter([{
@@ -16,7 +22,8 @@ const router = createBrowserRouter([{
     children:[
     {
         path:'',
-        element:<HomePage/>
+        element:<HomePage/>,
+        loader:eLoader
     },
     {
         path:'about',
@@ -24,10 +31,11 @@ const router = createBrowserRouter([{
     },
     {
         path:'articles',
-        element:<Articles/>
+        element:<Articles/>,
+        loader:bLoader
     },
     {
-        path:'articles/:name',
+        path:'articles/:id',
         element:<ArticleIndividual/>,
         loader:aLoader
     },
@@ -38,6 +46,17 @@ const router = createBrowserRouter([{
     {
         path:'login',
         element:<LoginPage/>
+    },{
+        path:'addarticle',
+        element:<AddArticle/>
+    },{
+        path:'profile',
+        element:<Profile/>,
+        loader:cLoader
+    },{
+        path:'edit-article/:id',
+        element:<EditArticle/>,
+        loader:dLoader
     }
 ],}]
 

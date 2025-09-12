@@ -15,10 +15,11 @@ const NavBar = () => {
           <li><Link to='/'>Home </Link> </li>
           <li><Link to='/about'>About</Link> </li>
           <li><Link to='/articles'>Articles</Link> </li>
+         { user && <li><Link to="/addarticle">Add Article</Link></li>}
           {isLoading ?<li>Loading...</li>:
           <>
           {
-            user&&(<li>Logged in as {user.email}</li>)
+            user&&<li> <Link to="/profile">Profile</Link> </li>
           }
           {
             <li>{user

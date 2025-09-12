@@ -1,15 +1,19 @@
-import { Link } from "react-router-dom"
-import articles from '../article-content'
+import { Link,useLoaderData } from "react-router-dom"
+import axios from "axios"
+const API_URL=import.meta.env.MODE==="development"?
+import.meta.env.VITE_API_URL_LOCAL:import.meta.env.VITE_API_URL
 const ArticlesSeparate = () => {
+  const articles=useLoaderData() || [];
+
+  if (!articles.length) return <p>No articles found</p>
   return (
     <div>
         {articles.map((a, index) => (
         <div key={index}>
-          <Link to={`/articles/${a.name}`}>
-            <h2>{a.title}</h2>
-            <h3>{a.name}</h3>
-            <p>{a.contents[0].substring(0,150)}......</p>
-
+          <Link to={`/articles/${a._id}`}>
+          {console.log(a._id)}
+            <h2>{a.articleName}</h2>
+            <p>{a.content ? a.content.replace(/<[^>]+>/g, "").slice(0, 150) + "..." : "No preview available"}</p>
           </Link>
           
         </div>
@@ -17,5 +21,8 @@ const ArticlesSeparate = () => {
     </div>
   )
 }
-
+export  async function loader (){
+  const response =await axios.get(`${API_URL}/api/articles`)
+  return response.data
+}
 export default ArticlesSeparate

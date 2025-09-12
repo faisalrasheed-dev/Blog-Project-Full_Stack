@@ -8,7 +8,9 @@ const CreateAccountPage = () => {
     const [error,setError]=useState('')
     const navigate=useNavigate()
     const [confirmPassword,setConfirmPassword]=useState('')
+    const[loading,setLoading]=useState()
     const handleLogin= async()=>{
+      setLoading(true)
       if (password !== confirmPassword)
       {
         setError("password and confirm password doesnt match")
@@ -20,6 +22,9 @@ const CreateAccountPage = () => {
         }
         catch (e){
             setError(e.message)
+        }
+        finally{
+          setLoading(false)
         }
 
     }
@@ -33,7 +38,7 @@ const CreateAccountPage = () => {
         onChange={e=>setPassword(e.target.value)} />
         <input type="password" placeholder='Confirm Your Password' value={confirmPassword} 
         onChange={e=>setConfirmPassword(e.target.value)} />
-        <button onClick={handleLogin}>Create Account</button>
+        <button onClick={handleLogin} disabled={loading}>{loading?"Waiting":"Create Account"}</button>
         <Link to='/login'>Already have an account</Link>
     </div>
   )
