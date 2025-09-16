@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
-import ReactQuill from 'react-quill';
-import "react-quill/dist/quill.snow.css";
+import {useEffect } from 'react';
 import { useNavigate, useLoaderData, useParams } from 'react-router-dom';
 import { useUser } from '../UserContext';
+import ArticleForm from '../components/ArticleForm';
 
 const API_URL = import.meta.env.MODE === 'development'
   ? import.meta.env.VITE_API_URL_LOCAL
@@ -12,26 +11,15 @@ const API_URL = import.meta.env.MODE === 'development'
 const EditArticle = () => {
   const article = useLoaderData();
   const { id } = useParams();
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(false);
   const { isLoading: userLoading, user } = useUser();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (article) {
-      setTitle(article.articleName);
-      setContent(article.content);
-    }
-  }, [article]);
-
   useEffect(() => {
     if (!user && !userLoading) {
       navigate("/login");
     }
   }, [user, userLoading, navigate]);
 
-  const handleEdit = async () => {
+  const handleEdit = async (title,content) => {
     const token = localStorage.getItem("authtoken");
     if (!token) return navigate('/login');
 
@@ -44,31 +32,10 @@ const EditArticle = () => {
       alert("Failed to update article");
     }
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (loading) return;
-    if (!title.trim() || !content.trim()) return;
-    if (content.trim().split(/\s+/).length < 50) {
-      alert("Content must contain at least 50 words");
-      return;
-    }
-    setLoading(true);
-    await handleEdit();
-    setLoading(false);
-  };
-
   if (userLoading || !article) return <div>Loading...</div>;
 
   return (
-    <div>
-      <h1>Edit Article</h1>
-      <input type="text" placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
-      <ReactQuill placeholder="Write Your Content Here" value={content} onChange={setContent} />
-      <button onClick={handleSubmit} disabled={loading || userLoading}>
-        {loading ? "Submitting..." : "Submit"}
-      </button>
-    </div>
+    <ArticleForm onSubmit={handleEdit} initialData={{title:article.articleName,content:article.content}} />
   );
 };
 

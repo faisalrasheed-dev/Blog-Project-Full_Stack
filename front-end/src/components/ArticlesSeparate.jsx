@@ -1,5 +1,6 @@
-import { Link,useLoaderData } from "react-router-dom"
+import { useLoaderData } from "react-router-dom"
 import axios from "axios"
+import { ArticleCard } from "./ArticleCard";
 const API_URL=import.meta.env.MODE==="development"?
 import.meta.env.VITE_API_URL_LOCAL:import.meta.env.VITE_API_URL
 const ArticlesSeparate = () => {
@@ -7,18 +8,10 @@ const ArticlesSeparate = () => {
 
   if (!articles.length) return <p>No articles found</p>
   return (
-    <div>
-        {articles.map((a, index) => (
-        <div key={index}>
-          <Link to={`/articles/${a._id}`}>
-          {console.log(a._id)}
-            <h2>{a.articleName}</h2>
-            <p>{a.content ? a.content.replace(/<[^>]+>/g, "").slice(0, 150) + "..." : "No preview available"}</p>
-          </Link>
-          
-        </div>
-      ))}
-    </div>
+    <main className=" font-sans bg-gray-100">
+      <h1 className="text-center text-xl md:text-4xl font-bold mb-6">List of Articles</h1>
+      <ArticleCard articles={articles} />
+    </main>
   )
 }
 export  async function loader (){

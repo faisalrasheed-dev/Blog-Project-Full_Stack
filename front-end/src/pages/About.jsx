@@ -2,19 +2,31 @@ import React from 'react'
 
 const About = () => {
   return (
-    <div><h1>About This Blog</h1>
+    <section className="max-w-3xl mx-auto text-center space-y-6">
+  <h2 className="text-3xl font-bold text-gray-800">About InkFlow</h2>
+  
+  <p className="text-gray-600 text-lg leading-relaxed">
+    Welcome to <span className="font-semibold text-blue-600">InkFlow</span>, a space 
+    where ideas turn into stories and stories spark conversations. 
+    We believe words have the power to inspire, connect, and create change.
+  </p>
+  
+  <p className="text-gray-600 text-lg leading-relaxed">
+    From personal reflections to creative insights, our mission is simple:
+    to share voices that matter. Whether you’re here to read, learn, or explore,
+    InkFlow is your home for meaningful words.
+  </p>
 
-<p>Welcome! This blog is a space where I share ideas, tutorials, and insights on topics that inspire me. From web development and programming to personal growth and productivity, the goal is to provide content that is both helpful and engaging.
+  <div className="pt-6 border-t border-gray-300">
+    <p className="text-gray-700 text-base">
+      Developed with ❤️ by <span className="font-semibold text-gray-900">Muhammed Faisal R</span>
+    </p>
+    <p className="text-gray-500 text-sm">
+      Full Stack Developer | Passionate about React, MERN, and Creative Coding
+    </p>
+  </div>
+</section>
 
-Every article here is written based on personal experience or careful research. I aim to make learning accessible for beginners while still offering value to experienced readers.
-
-This project also allows registered users to interact: you can comment on articles and upvote them. Each user can upvote an article only once, ensuring fair feedback.
-
-The blog is constantly evolving, and your participation makes it better. Whether you’re here to learn, explore, or share, you’re part of the journey.
-
-Thank you for visiting!
-
-— Written with curiosity and a passion for learning.</p></div>
   )
 }
 
