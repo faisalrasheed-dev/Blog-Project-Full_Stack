@@ -4,6 +4,7 @@ import { MongoClient, ServerApiVersion , ObjectId} from 'mongodb';
 import admin from 'firebase-admin';
 import fs from 'fs';
 import dotenv from 'dotenv'
+import { create } from 'domain';
 dotenv.config()
 
 const serviceAccountBase64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
@@ -39,21 +40,37 @@ app.get('/api/articles/top-articles',async(req,res)=>{
   }
   
 })
-app.get('/api/articles/:id', async (req, res) => {
-  const { id } = req.params;
-  const article = await db.collection('articles').findOne({ _id: new ObjectId(id) });
-  res.json(article);
-});
+
 app.get('/api/articles', async (req, res) => {
-  try{
-    const article = await db.collection('articles').find({}).toArray();
-    res.json(article);
-  }
-  catch(e){
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    const totalArticles = await db.collection('articles').countDocuments();
+
+    const articles = await db.collection('articles')
+      .find({})
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    res.json({
+      articles,
+      page,
+      totalPages: Math.ceil(totalArticles / limit),
+    });
+
+  } catch (e) {
     console.error("Error fetching articles:", e);
-    res.status(500).json({status:false,message:"Article showing Failed"})
+    res.status(500).json({
+      status: false,
+      message: "Article showing Failed"
+    });
   }
 });
+
 app.use(async (req, res, next) => {
   const token = req.headers.authtoken; 
   if (token) {
@@ -68,6 +85,21 @@ app.use(async (req, res, next) => {
   } else {
     return res.sendStatus(400); 
   }
+});
+app.get('/api/articles/:id', async (req, res) => {
+  try{
+    const { id } = req.params;
+    const skip=parseInt(req.query.skip) || 0
+    const limit=parseInt(req.query.limit) || 5
+    const article = await db.collection('articles').findOne({ _id: new ObjectId(id) });
+    const totalComments=article.comments.length
+    const paginatedComments = article.comments.slice(skip, skip + limit);
+    res.json({article:{...article,
+    comments: paginatedComments },totalComments});
+  }catch(e){
+    res.status(500).json({status:false,message:"failed to load article"})
+  }
+  
 });
 app.post('/api/articles/:id/upvotes', async (req, res) => {
   try {
@@ -152,11 +184,15 @@ app.post('/api/articles/:id/comments', async (req, res) => {
   res.json(updatedArticle);
 });
 app.get('/api/profile',async (req,res)=>{
-  const {email}=req.user
   try{
+    const {email}=req.user
     if (!req.user) return res.status(401).json({ status: false, message: "Unauthorized" });
-    const articles=await db.collection('articles').find({author:email}).toArray()
-    res.json({status:true,response:articles,count:articles.length})
+    const limit=parseInt(req.query.limit) || 5
+    const skip=parseInt(req.query.skip) || 0
+    const totalArticles=await db.collection('articles').countDocuments({author:email})
+    const articles=await db.collection('articles').find({author:email}).
+    sort({createdAt:-1}).skip(skip).limit(limit).toArray()
+    res.json({articles,totalArticles})
   }
   catch(e){
     console.log(e)

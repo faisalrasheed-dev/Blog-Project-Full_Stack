@@ -7,11 +7,11 @@ import ArticleIndividual, { loader as aLoader } from "./pages/ArticleIndividual"
 import Articles from './pages/Articles';
 import CreateAccountPage from "./pages/CreateAccountPage";
 import EditArticle, { loader as dLoader } from "./pages/EditArticle";
-import HomePage from './pages/HomePage';
+import HomePage, { loader as eLoader } from './pages/HomePage';
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 import Profile, { loader as cLoader } from './pages/Profile';
-import { loader as eLoader } from "./pages/HomePage";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 
 
@@ -36,7 +36,7 @@ const router = createBrowserRouter([{
     },
     {
         path:'articles/:id',
-        element:<ArticleIndividual/>,
+        element: <ArticleIndividual/>,
         loader:aLoader
     },
     {
@@ -48,10 +48,13 @@ const router = createBrowserRouter([{
         element:<LoginPage/>
     },{
         path:'addarticle',
-        element:<AddArticle/>
+        element:<ProtectedRoutes>
+            <AddArticle/>
+        </ProtectedRoutes>
+        
     },{
         path:'profile',
-        element:<Profile/>,
+        element:<Profile/> ,
         loader:cLoader
     },{
         path:'edit-article/:id',

@@ -1,7 +1,4 @@
 import axios from 'axios';
-import { useEffect } from 'react';
-
-import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
 import ArticleForm from '../components/ArticleForm';
 
@@ -11,20 +8,11 @@ const API_URL = import.meta.env.MODE === 'development'
 
 export const AddArticle = () => {
   const { isLoading: userLoading, user } = useUser();
-  const navigate=useNavigate()
- 
-    useEffect(() => {
-  if (!user && !userLoading) {
-    navigate("/login");
-  }
-}, [user, userLoading, navigate]);
 
-  const articleUpload = async (title,content) => {
-    const token = user && await user.getIdToken();
-    if(!token){ 
-         return alert("user not login")
-    }
+  const articleUpload = async (title, content) => {
+    const token = await user.getIdToken();
     const headers = { authtoken: token };
+
     try {
       const response = await axios.post(`${API_URL}/api/addarticle`, { title, content }, { headers });
       if (response.data.success) {
@@ -36,7 +24,5 @@ export const AddArticle = () => {
     }
   };
 
-  return (
-    <ArticleForm onSubmit={articleUpload} userLoading={userLoading}/>
-  );
+  return <ArticleForm onSubmit={articleUpload} userLoading={userLoading} />;
 };

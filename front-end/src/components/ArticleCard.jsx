@@ -21,7 +21,7 @@ export const ArticleCard = ({ articles }) => {
           <div className="flex-1 flex flex-col justify-between">
             <div className="flex flex-col md:flex-row justify-between items-center mb-2">
               <Link to={`/articles/${a._id}`}>
-                <h2 className="text-[0.9rem] md:text-2xl font-semibold hover:underline">
+                <h2 className="text-[0.9rem] md:text-2xl font-semibold hover:underline ">
                   {a.articleName}
                 </h2>
               </Link>

@@ -1,36 +1,35 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
-import { useLoaderData, useParams, useNavigate } from 'react-router-dom';
-import { AddComment } from '../components/AddComment'; 
-import { CommentsList } from '../components/CommentsList'; 
-import { useUser } from '../UserContext.jsx';
 import DOMPurify from 'dompurify';
+import { useEffect, useState } from 'react';
+import { redirect,useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { AddComment } from '../components/AddComment';
+import { CommentsList } from '../components/CommentsList';
+import LoadMoreButton from '../components/LoadMoreButton.jsx';
+import { useUser } from '../UserContext.jsx';
 
 const API_URL = import.meta.env.MODE === 'development'
   ? import.meta.env.VITE_API_URL_LOCAL 
   : import.meta.env.VITE_API_URL;
 
 const ArticleIndividual = () => {
-  const { comments: initialComments, upvotes: initialUpvotes, articleName, content, upvoteIds } = useLoaderData();
+  const { comments: initialComments, upvotes: initialUpvotes, articleName, content, upvoteIds,skip,limit,totalComments} = useLoaderData();
   const safeContent = DOMPurify.sanitize(content);
   const [upvotes, setUpvotes] = useState(initialUpvotes);
   const [comments, setComments] = useState(initialComments);
   const { id } = useParams();
   const { isLoading, user } = useUser();
-  const navigate = useNavigate();
   const [upvotedUser, setUpvotedUser] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [skips,setSkips]=useState(skip)
+  
 
   useEffect(() => {
-    if (!user && !isLoading) return navigate('/login');
-    if (user) setUpvotedUser(upvoteIds.includes(user.uid));
-  }, [user, isLoading, navigate]);
+    setUpvotedUser(upvoteIds.includes(user?.uid));
+  }, [upvoteIds,user]);
 
   async function upvoteUpdate() {
     setLoading(true);
-    const token = user && await user.getIdToken();
-    if (!token) return navigate('/login');
-
+    const token = localStorage.getItem('authtoken')
     const alreadyUpvoted = upvotedUser;
     setUpvotes(prev => alreadyUpvoted ? prev - 1 : prev + 1);
     setUpvotedUser(prev => !prev);
@@ -39,7 +38,7 @@ const ArticleIndividual = () => {
       const headers = { authtoken: token };
       const response = await axios.post(`${API_URL}/api/articles/${id}/upvotes`, null, { headers });
       setUpvotes(response.data.upvotes);
-      setUpvotedUser(response.data.upvoteIds.includes(user.uid));
+      setUpvotedUser(response.data.upvoteIds.includes(user?.uid));
     } catch (e) {
       setUpvotes(prev => alreadyUpvoted ? prev + 1 : prev - 1);
       setUpvotedUser(prev => alreadyUpvoted);
@@ -49,12 +48,22 @@ const ArticleIndividual = () => {
   }
 
   async function onAddComment({ commentText }) {
-    const token = user && await user.getIdToken();
-    if (!token) return navigate('/login');
-
+    const token = localStorage.getItem('authtoken')
     const headers = { authtoken: token };
     const response = await axios.post(`${API_URL}/api/articles/${id}/comments`, { text: commentText }, { headers });
     setComments(response.data.comments);
+  }
+  async function handleLoadComments(){
+    try{
+      const token=localStorage.getItem('authtoken')
+      const headers={authtoken:token}
+      const nextSkip = skips + limit
+      const response=await axios.get(`${API_URL}/api/articles/${id}?skip=${nextSkip}&limit=${limit}`,{headers})
+        setSkips(nextSkip)
+        setComments(prev=>[...prev,...response.data.article.comments])
+    }catch(e){
+      alert('error')
+    }
   }
 
   return (
@@ -65,7 +74,7 @@ const ArticleIndividual = () => {
       </h1>
 
  
-      {user && (
+      
         <div className="flex justify-center">
           <button
             onClick={upvoteUpdate}
@@ -79,7 +88,7 @@ const ArticleIndividual = () => {
             {loading ? "Upvoting..." : "Upvote"}
           </button>
         </div>
-      )}
+      
 
       <h2 className="text-center text-lg md:text-xl font-medium text-gray-700">
         This article has {upvotes} upvotes
@@ -90,7 +99,7 @@ const ArticleIndividual = () => {
         dangerouslySetInnerHTML={{ __html: safeContent }}
       />
 
-      {user && (
+      
         <>
       
           <h2 className="text-2xl md:text-3xl mt-10 mb-4 font-semibold text-gray-800 text-center">
@@ -98,7 +107,7 @@ const ArticleIndividual = () => {
           </h2>
           <AddComment onAddComment={onAddComment} />
         </>
-      )}
+      
 
       
       <div className="mt-10">
@@ -107,14 +116,27 @@ const ArticleIndividual = () => {
         </h2>
         <CommentsList comments={comments} />
       </div>
+
+  <div className="prose prose-sm md:prose-md max-w-3xl mx-auto text-center">
+  <LoadMoreButton onClick={handleLoadComments} show={comments.length<totalComments}/>
+</div>
+
     </div>
   );
 };
 
 export async function loader({ params }) {
-  const response = await axios.get(`${API_URL}/api/articles/${params.id}`);
-  const { comments, upvotes, articleName, content, upvoteIds } = response.data;
-  return { comments, upvotes, articleName, content, upvoteIds };
+  const token = localStorage.getItem('authtoken')
+  if (!token) {
+    return redirect('/login')
+  }
+  const skip=0
+  const limit=5
+  const headers = { authtoken: token }
+  const response = await axios.get(`${API_URL}/api/articles/${params.id}?skip=${skip}&limit=${limit}`,{headers});
+  const { comments,upvotes, articleName, content, upvoteIds } = response.data.article;
+  const totalComments=response.data.totalComments
+  return { comments, upvotes, articleName, content, upvoteIds,totalComments,skip,limit };
 }
 
 export default ArticleIndividual;
