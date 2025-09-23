@@ -1,12 +1,9 @@
 Blog Platform (MERN Stack)
 
 Overview
-
 A full-stack blogging platform developed using the MERN stack (MongoDB, Express.js, React.js, Node.js) and Vite. Users can create, manage articles, upvote, and comment on articles. Authentication is handled via Firebase, and global state is managed using Context API.
 
-
 ---
-
 Features
 
 User Authentication: Login and Register via Firebase
@@ -21,7 +18,6 @@ Shows articles 8 at a time with "Load More" if there are more
 
 Each article includes Edit and Delete options
 
-
 Pagination & Load More: Articles and comments support pagination and "load more" buttons
 
 Upvotes & Comments: Upvote toggle functionality and comments with load more for more than 5 comments
@@ -33,8 +29,6 @@ Dynamic Routing: Each article links to its individual page
 Responsive Design: Tailwind CSS, hamburger menu for mobile, reusable components
 
 Loader & Authentication Check: Shows loader while verifying authentication; redirects to login if unauthenticated
-
-
 
 ---
 
@@ -52,8 +46,6 @@ State Management: Context API
 
 Deployment: Frontend on Vercel, Backend on Render
 
-
-
 ---
 
 Installation
@@ -69,36 +61,21 @@ cd backend
 npm install
 npm start
 
-
 3. Frontend Setup:
 
 cd frontend
 npm install
 npm start
 
-
-
-
 ---
 
-Live Demo
-
-Frontend: https://blog-project-full-stack.vercel.app
-
-Backend: [Render Link] (Please provide the backend URL)
-
-
-
+Live Demo: https://blog-project-full-stack.vercel.app
 ---
 
 Author
-
 Muhammed Faisal R
 
 GitHub: https://github.com/faisalrasheed-dev
 
 Email: faisalrasheed.pro@gmail.com
-
-
-
 ---
