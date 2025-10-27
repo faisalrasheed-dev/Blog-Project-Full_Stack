@@ -1,10 +1,9 @@
-import React from 'react'
+import { useState } from 'react';
 import ReactQuill from 'react-quill';
 import "react-quill/dist/quill.snow.css";
-import { useState } from 'react';
 const ArticleForm = ({initialData={},onSubmit,userLoading}) => {
-const [title, setTitle] = useState(initialData.title ||'');
-  const [content, setContent] = useState(initialData.content || '');
+const [title, setTitle] = useState(initialData?.title ||'');
+  const [content, setContent] = useState(initialData?.content || '');
   const [loading, setLoading] = useState(false);
     const handleSubmit = async (e) => {
     e.preventDefault();

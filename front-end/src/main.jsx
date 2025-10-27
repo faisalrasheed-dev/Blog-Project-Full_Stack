@@ -6,7 +6,7 @@ import router from './router';
 import {UserProvider} from './UserContext.jsx'
 import { initializeApp } from "firebase/app";
 const firebaseConfig = {
-  apiKey: "AIzaSyCzA641YzEP11HusDQWVvItzbrF7Ih0B8Q",
+  apiKey: import.meta.env.VITE_FIREBASE_API,
   authDomain: "full-stack-react-23346.firebaseapp.com",
   projectId: "full-stack-react-23346",
   storageBucket: "full-stack-react-23346.firebasestorage.app",

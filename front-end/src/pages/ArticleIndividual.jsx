@@ -1,7 +1,7 @@
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 import { useEffect, useState } from 'react';
-import { redirect,useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { redirect, useLoaderData, useParams } from 'react-router-dom';
 import { AddComment } from '../components/AddComment';
 import { CommentsList } from '../components/CommentsList';
 import LoadMoreButton from '../components/LoadMoreButton.jsx';

@@ -5,7 +5,9 @@ const API_URL=import.meta.env.MODE==="development"?
 import.meta.env.VITE_API_URL_LOCAL:import.meta.env.VITE_API_URL
 const ArticlesSeparate = () => {
   const{articles,page,totalPages} =useLoaderData() || {};
-  
+  if (!articles || articles.length === 0) {
+  return <p>No articles found</p>;
+}
 
   if (!articles.length) return <p>No articles found</p>
   return (

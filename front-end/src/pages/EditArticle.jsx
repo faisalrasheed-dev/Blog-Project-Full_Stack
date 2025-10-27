@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { redirect,useNavigate , useLoaderData, useParams } from 'react-router-dom';
+import { redirect, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { useUser } from '../UserContext';
 import ArticleForm from '../components/ArticleForm';
 
@@ -19,7 +19,7 @@ const EditArticle = () => {
 
     try {
       const headers = { authtoken: token };
-      await axios.put(`${API_URL}/api/articles/edit-article/${id}`, { title, content }, { headers });
+      await axios.put(`${API_URL}/api/articles/edit-article/${id}`, {title, content }, { headers });
       navigate(`/articles/${id}`);
     } catch (e) {
       console.log(e);
@@ -40,7 +40,7 @@ export async function loader({ params }) {
   }
   const headers = { authtoken: token }
   const response = await axios.get(`${API_URL}/api/articles/${params.id}`,{headers});
-  return response.data;
+  return response.data.article;
 }
 
 export default EditArticle;
