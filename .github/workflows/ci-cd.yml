@@ -32,11 +32,11 @@ jobs:
                 key: ${{secrets.EC2_SSH_KEY}}
                 port: 22
                 script: |
-                  docker stop blog-container || true
-                  docker rm blog-container || true
+                  docker stop blog-backend || true
+                  docker rm blog-backend || true
                   docker pull ${{ secrets.DOCKERHUB_USERNAME}}/${{ secrets.IMAGE_NAME}}:latest
                   docker run -d \
-                    --name blog-container \
+                    --name blog-backend \
                     --restart always \
                     -p 127.0.0.1:8000:8000 ${{ secrets.DOCKERHUB_USERNAME}}/${{ secrets.IMAGE_NAME}}:latest
 
