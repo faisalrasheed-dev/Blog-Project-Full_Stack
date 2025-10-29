@@ -38,7 +38,9 @@ jobs:
                   docker stop blog-backend || true
                   docker rm blog-backend || true
                   docker pull ${{ secrets.DOCKERHUB_USERNAME}}/${{ secrets.IMAGE_NAME}}:latest
+                  docker network create monitoring || true
                   docker run -d \
+                    --network monitoring \
                     --name blog-backend \
                     --restart always \
                     --env-file /home/ec2-user/.env \
